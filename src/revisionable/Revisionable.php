@@ -18,6 +18,8 @@ trait Revisionable
 //
 //    protected $revisionOnlyFields = [];
 //
+//    protected $revisionNotRecordValueFields = [];
+
 //    protected $revisionEnabled = true;
 //
 //    protected $revisionFormattedFieldValues = [];
@@ -121,8 +123,8 @@ trait Revisionable
                 'revisionable_type' => $this->getMorphClass(),
                 'revisionable_id'   => $this->getKey(),
                 'type'              => 'update',
-                'old_value'         => $value,
-                'new_value'         => $this->getAttribute($key),
+                'old_value'         => in_array($key, $this->getRevisionNotRecordValueFields()) ? '' : $value,
+                'new_value'         => in_array($key, $this->getRevisionNotRecordValueFields()) ? '' : $this->getAttribute($key),
                 'field'             => $key,
                 'ip'                => $this->getIp(),
             ]);
@@ -164,6 +166,15 @@ trait Revisionable
     {
         if (isset($this->revisionAliasedFieldNames)) {
             return $this->revisionAliasedFieldNames;
+        }
+        return [];
+    }
+
+
+    public function getRevisionNotRecordValueFields()
+    {
+        if(isset($this->revisionNotRecordValueFields)) {
+            return $this->revisionNotRecordValueFields;
         }
         return [];
     }

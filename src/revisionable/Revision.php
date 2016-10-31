@@ -8,6 +8,8 @@
 namespace Runner\Revisionable;
 
 use Illuminate\Database\Eloquent\Model;
+use Auth;
+use Symfony\Component\Debug\Exception\FatalErrorException;
 
 class Revision extends Model
 {
@@ -32,7 +34,11 @@ class Revision extends Model
 
     public function user()
     {
-        return $this->belongsTo(Auth::getProvider()->getModel());
+        if (method_exists(Auth::getProvider(), 'getModel')) {
+            return $this->belongsTo(Auth::getProvider()->getModel());
+        }
+
+        return $this->belongsTo(Auth::getProvider()->createModel());
     }
 
 
@@ -50,7 +56,12 @@ class Revision extends Model
 
     protected function getValue($value)
     {
-        $rules = $this->revisionable->getRevisionFormattedFieldValues();
+        if(!class_exists($this->revisionable_type)) {
+            return $value;
+        }
+        $model = new $this->revisionable_type;
+
+        $rules = $model->getRevisionFormattedFieldValues();
 
         if (isset($rules[$this->getOriginal('field')])) {
             return Formatter::format($rules[$this->getOriginal('field')], $value);
@@ -62,10 +73,13 @@ class Revision extends Model
 
     public function getFieldAttribute($value)
     {
-        $aliases = $this->revisionable->getRevisionAliasedFieldNames();
+        if(!class_exists($this->revisionable_type)) {
+            return $value;
+        }
+        $model = new $this->revisionable_type;
 
-        if (isset($aliases[$value])) {
-            return $aliases[$value];
+        if (isset($model->getRevisionAliasedFieldNames()[$value])) {
+            return $model->getRevisionAliasedFieldNames()[$value];
         }
 
         return $value;

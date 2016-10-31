@@ -10,14 +10,6 @@ namespace Runner\Revisionable;
 class Formatter
 {
 
-    protected static $formatters = [
-        'empty',
-        'boolean',
-        'string',
-        'date',
-    ];
-
-
     protected static $extFormatters = [];
 
 
@@ -29,20 +21,26 @@ class Formatter
 
     public static function format($rule, $value)
     {
-        list($format, $parameters) = explode(':', $rule, 2);
+        $rule = explode(':', $rule, 2);
 
-        if(in_array($format, self::$formatters)) {
+        $format = $rule[0];
+        $parameters = isset($rule[1]) ? explode(',', $rule[1]) : [];
 
+        try {
             return forward_static_call_array(
                 [Formatter::class, 'format' . ucfirst($format)],
-                array_merge([$value], explode(',', $parameters))
+                array_merge([$value], $parameters)
             );
+        }catch (\Exception $e) {
+            try {
+                return call_user_func_array(
+                    self::$extFormatters[$format],
+                    array_merge([$value], $parameters)
+                );
+            }catch (\Exception $e) {}
         }
 
-        return call_user_func_array(
-            self::$extFormatters[$format],
-            array_merge([$value], explode(',', $parameters))
-        );
+        return $value;
     }
 
 
@@ -61,5 +59,17 @@ class Formatter
     public static function formatDate($value, $format = 'Y-m-d H:i:s')
     {
         return date($format, strtotime($value));
+    }
+
+
+    public static function formatTranslate($value, $string)
+    {
+        foreach (explode('|', $string) as $item) {
+            list($k, $v) = explode('=', $item, 2);
+            if($k == $value) {
+                return $v;
+            }
+        }
+        return $value;
     }
 }
