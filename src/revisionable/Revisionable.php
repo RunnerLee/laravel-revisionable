@@ -7,6 +7,8 @@
 
 namespace Runner\Revisionable;
 
+use Auth, Request;
+
 trait Revisionable
 {
 
@@ -21,6 +23,8 @@ trait Revisionable
 //    protected $revisionFormattedFieldValues = [];
 //
 //    protected $revisionAliasedFieldNames = [];
+//
+//    protected $revisionRecordIp = true;
 
 
     public static function boot()
@@ -85,7 +89,7 @@ trait Revisionable
             return $this->postUpdate();
         }
 
-        Revisions::create([
+        Revision::create([
             'user_id'           => $this->lookupUserId(),
             'revisionable_type' => $this->getMorphClass(),
             'revisionable_id'   => $this->getKey(),
@@ -93,6 +97,7 @@ trait Revisionable
             'old_value'         => null,
             'new_value'         => null,
             'field'             => null,
+            'ip'                => $this->getIp(),
         ]);
 
         return true;
@@ -103,7 +108,7 @@ trait Revisionable
     public function postUpdate()
     {
         foreach($this->dirtyData as $key => $value) {
-            Revisions::create([
+            Revision::create([
                 'user_id'           => $this->lookupUserId(),
                 'revisionable_type' => $this->getMorphClass(),
                 'revisionable_id'   => $this->getKey(),
@@ -111,6 +116,7 @@ trait Revisionable
                 'old_value'         => $value,
                 'new_value'         => $this->getAttribute($key),
                 'field'             => $key,
+                'ip'                => $this->getIp(),
             ]);
         }
 
@@ -122,7 +128,7 @@ trait Revisionable
 
     public function postCreate()
     {
-        Revisions::create([
+        Revision::create([
             'user_id'           => $this->lookupUserId(),
             'revisionable_type' => $this->getMorphClass(),
             'revisionable_id'   => $this->getKey(),
@@ -130,6 +136,7 @@ trait Revisionable
             'old_value'         => null,
             'new_value'         => null,
             'field'             => null,
+            'ip'                => $this->getIp(),
         ]);
 
         return true;
@@ -160,6 +167,15 @@ trait Revisionable
             return Auth::user()->getAuthIdentifier();
         }
 
+        return null;
+    }
+
+
+    protected function getIp()
+    {
+        if(isset($this->revisionRecordIp) && $this->revisionRecordIp) {
+            return Request::ip();
+        }
         return null;
     }
 }

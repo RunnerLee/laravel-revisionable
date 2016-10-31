@@ -9,7 +9,7 @@ namespace Runner\Revisionable;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Revisions extends Model
+class Revision extends Model
 {
 
     protected $fillable = [
@@ -20,6 +20,7 @@ class Revisions extends Model
         'revisionable_type',
         'revisionable_id',
         'user_id',
+        'ip',
     ];
 
 
