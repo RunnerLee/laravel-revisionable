@@ -21,7 +21,6 @@ class CreateRevisionsTable extends Migration
             $table->string('field')->index()->nullable();
             $table->text('old_value')->nullable();
             $table->text('new_value')->nullable();
-
             $table->timestamps();
         });
     }

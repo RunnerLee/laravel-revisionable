@@ -1,9 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: runner
- * Date: 16-10-31
- * Time: 上午9:45
+ * @author: RunnerLee
+ * @email: runnerleer@gmail.com
+ * @time: 16-10-31 上午 10:52
  */
 
 namespace Runner\Revisionable;
