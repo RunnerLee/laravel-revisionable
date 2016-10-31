@@ -36,19 +36,27 @@ trait Revisionable
     public static function bootRevisionable()
     {
         static::created(function($model) {
-            $model->postCreate();
+            if(!isset($model->revisionEnabled) || $model->revisionEnabled) {
+                $model->postCreate();
+            }
         });
 
         static::updating(function($model) {
-            $model->preUpdate();
+            if(!isset($model->revisionEnabled) || $model->revisionEnabled) {
+                $model->preUpdate();
+            }
         });
 
         static::updated(function($model) {
-            $model->postUpdate();
+            if(!isset($model->revisionEnabled) || $model->revisionEnabled) {
+                $model->postUpdate();
+            }
         });
 
         static::deleted(function($model) {
-            $model->postDelete();
+            if(!isset($model->revisionEnabled) || $model->revisionEnabled) {
+                $model->postDelete();
+            }
         });
     }
 
