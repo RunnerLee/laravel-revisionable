@@ -9,24 +9,17 @@ namespace Runner\Revisionable;
 
 use Auth, Request;
 
+/**
+ * Class Revisionable
+ * @package Runner\Revisionable
+ */
 trait Revisionable
 {
 
+    /**
+     * @var array
+     */
     protected $dirtyData = [];
-
-//    protected $revisionExceptFields = [];
-//
-//    protected $revisionOnlyFields = [];
-//
-//    protected $revisionNotRecordValueFields = [];
-
-//    protected $revisionEnabled = true;
-//
-//    protected $revisionFormattedFieldValues = [];
-//
-//    protected $revisionAliasedFieldNames = [];
-//
-//    protected $revisionRecordIp = true;
 
 
     public static function boot()
@@ -88,7 +81,6 @@ trait Revisionable
     }
 
 
-
     public function postDelete()
     {
         if(isset($this->forceDeleting) && !$this->forceDeleting) {
@@ -112,7 +104,6 @@ trait Revisionable
 
         return true;
     }
-
 
 
     public function postUpdate()
@@ -153,6 +144,9 @@ trait Revisionable
     }
 
 
+    /**
+     * @return array
+     */
     public function getRevisionFormattedFieldValues()
     {
         if (isset($this->revisionFormattedFieldValues)) {
@@ -162,6 +156,9 @@ trait Revisionable
     }
 
 
+    /**
+     * @return array
+     */
     public function getRevisionAliasedFieldNames()
     {
         if (isset($this->revisionAliasedFieldNames)) {
@@ -171,6 +168,9 @@ trait Revisionable
     }
 
 
+    /**
+     * @return array
+     */
     public function getRevisionNotRecordValueFields()
     {
         if(isset($this->revisionNotRecordValueFields)) {
@@ -180,6 +180,9 @@ trait Revisionable
     }
 
 
+    /**
+     * @return string|integer|null
+     */
     protected function lookupUserId()
     {
         if(Auth::check()) {
@@ -190,6 +193,9 @@ trait Revisionable
     }
 
 
+    /**
+     * @return string|null
+     */
     protected function getIp()
     {
         if(isset($this->revisionRecordIp) && $this->revisionRecordIp) {

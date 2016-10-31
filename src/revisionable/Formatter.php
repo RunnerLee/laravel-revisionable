@@ -7,18 +7,34 @@
 
 namespace Runner\Revisionable;
 
+/**
+ * Class Formatter
+ * @package Runner\Revisionable
+ */
 class Formatter
 {
 
+    /**
+     * @var array
+     */
     protected static $extFormatters = [];
 
 
+    /**
+     * @param $name
+     * @param $callback
+     */
     public static function extend($name, $callback)
     {
         self::$extFormatters[$name] = $callback;
     }
 
 
+    /**
+     * @param string $rule
+     * @param string $value
+     * @return mixed
+     */
     public static function format($rule, $value)
     {
         $rule = explode(':', $rule, 2);
@@ -44,24 +60,45 @@ class Formatter
     }
 
 
+    /**
+     * @param string|integer $value
+     * @param string $yes
+     * @param string $no
+     * @return mixed
+     */
     public static function formatBoolean($value, $yes, $no)
     {
         return (!!$value ? $yes : $no);
     }
 
 
+    /**
+     * @param string $value
+     * @param string $format
+     * @return string
+     */
     public static function formatString($value, $format)
     {
         return sprintf($format, $value);
     }
 
 
+    /**
+     * @param string $value
+     * @param string $format
+     * @return false|string
+     */
     public static function formatDate($value, $format = 'Y-m-d H:i:s')
     {
         return date($format, strtotime($value));
     }
 
 
+    /**
+     * @param string|integer $value
+     * @param $string
+     * @return string
+     */
     public static function formatTranslate($value, $string)
     {
         foreach (explode('|', $string) as $item) {

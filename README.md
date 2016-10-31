@@ -31,6 +31,9 @@ class Article extends Model
 
     // 固定记录的字段， $revisionExceptFields 与 $revisionOnlyFields并存时，只生效$revisionOnlyFields
     protected $revisionOnlyFields = [];
+    
+    // 记录修改但不保存值的字段
+    protected $revisionNotRecordValueFields = [];
 
     // 是否启用
     protected $revisionEnabled = true;

@@ -14,6 +14,9 @@ use Symfony\Component\Debug\Exception\FatalErrorException;
 class Revision extends Model
 {
 
+    /**
+     * @var array
+     */
     protected $fillable = [
         'type',
         'field',
@@ -26,12 +29,18 @@ class Revision extends Model
     ];
 
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
     public function revisionable()
     {
         return $this->morphTo();
     }
 
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function user()
     {
         if (method_exists(Auth::getProvider(), 'getModel')) {
@@ -42,18 +51,30 @@ class Revision extends Model
     }
 
 
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
     public function getNewValueAttribute($value)
     {
         return $this->getValue($value);
     }
 
 
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
     public function getOldValueAttribute($value)
     {
         return $this->getValue($value);
     }
 
 
+    /**
+     * @param mixed $value
+     * @return mixed
+     */
     protected function getValue($value)
     {
         if(!class_exists($this->revisionable_type)) {
@@ -71,6 +92,10 @@ class Revision extends Model
     }
 
 
+    /**
+     * @param string $value
+     * @return string
+     */
     public function getFieldAttribute($value)
     {
         if(!class_exists($this->revisionable_type)) {
