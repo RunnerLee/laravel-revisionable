@@ -18,6 +18,7 @@ class CreateRevisionsTable extends Migration
             $table->integer('revisionable_id')->unsigned()->index();
             $table->string('type')->index();
             $table->integer('user_id')->unsigned()->index();
+            $table->ipAddress('ip')->nullable();
             $table->string('field')->index()->nullable();
             $table->text('old_value')->nullable();
             $table->text('new_value')->nullable();
