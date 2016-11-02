@@ -72,7 +72,7 @@ trait Revisionable
         if (isset($this->revisionExceptFields)) {
             foreach ($this->revisionExceptFields as $key) {
                 if(isset($this->dirtyData[$key])) {
-                    unset($this->dirtyData);
+                    unset($this->dirtyData[$key]);
                 }
             }
         }
