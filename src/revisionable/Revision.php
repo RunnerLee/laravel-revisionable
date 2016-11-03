@@ -28,6 +28,8 @@ class Revision extends Model
         'ip',
     ];
 
+    protected static $revisionObjects = [];
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
@@ -80,7 +82,7 @@ class Revision extends Model
         if(!class_exists($this->revisionable_type)) {
             return $value;
         }
-        $model = new $this->revisionable_type;
+        $model = $this->getRevisionable($this->revisionable_type);
 
         $rules = $model->getRevisionFormattedFieldValues();
 
@@ -101,13 +103,23 @@ class Revision extends Model
         if(!class_exists($this->revisionable_type)) {
             return $value;
         }
-        $model = new $this->revisionable_type;
+        $model = $this->getRevisionable($this->revisionable_type);
 
         if (isset($model->getRevisionAliasedFieldNames()[$value])) {
             return $model->getRevisionAliasedFieldNames()[$value];
         }
 
         return $value;
+    }
+
+
+    protected function getRevisionable($revisionableType)
+    {
+        if(!isset(self::$revisionObjects[$revisionableType])) {
+            self::$revisionObjects[$revisionableType] = new $revisionableType;
+        }
+
+        return self::$revisionObjects[$revisionableType];
     }
 
 }
