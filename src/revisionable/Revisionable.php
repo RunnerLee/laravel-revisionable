@@ -115,7 +115,7 @@ trait Revisionable
                 'revisionable_id'   => $this->getKey(),
                 'type'              => 'update',
                 'old_value'         => in_array($key, $this->getRevisionNotRecordValueFields()) ? '' : $value,
-                'new_value'         => in_array($key, $this->getRevisionNotRecordValueFields()) ? '' : $this->getAttribute($key),
+                'new_value'         => in_array($key, $this->getRevisionNotRecordValueFields()) ? '' : $this->getAttributes()[$key],
                 'field'             => $key,
                 'ip'                => $this->getIp(),
             ]);
